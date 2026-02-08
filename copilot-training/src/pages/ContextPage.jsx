@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../hooks/useProgress';
 import { Button } from '../components/shared/Button';
+import { Footer } from '../components/shared/Footer';
 import { 
   Brain, 
   Puzzle, 
@@ -10,7 +11,9 @@ import {
   Settings, 
   RotateCw, 
   Send,
-  ArrowLeft 
+  ArrowLeft,
+  ExternalLink,
+  Sliders
 } from 'lucide-react';
 
 export const ContextPage = () => {
@@ -324,12 +327,41 @@ export const ContextPage = () => {
         </div>
       </section>
       
+      {/* Useful Resources */}
+      <section className="max-w-3xl mx-auto px-6 pb-12">
+        <div className="p-8 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+            <ExternalLink className="w-5 h-5 text-purple-600" /> Useful Resources
+          </h3>
+          <div className="grid grid-cols-1 gap-8">
+            <a
+              href="https://docs.github.com/en/copilot/concepts/prompting/response-customization"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-5 rounded-xl border border-slate-200 hover:border-purple-300 hover:shadow-md transition-all group"
+            >
+              <div className="p-2 rounded-lg bg-purple-100 text-purple-600">
+                <Sliders className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-sm group-hover:text-purple-600 transition-colors">Customizing Copilot Responses</div>
+                <div className="text-xs text-slate-400">docs.github.com</div>
+              </div>
+              <span className="shrink-0 px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Open ↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Completion Button */}
       <div className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <Button onClick={handleComplete} size="lg">
           Mark Complete & Continue
         </Button>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../hooks/useProgress';
+import { Footer } from '../components/shared/Footer';
 import { 
   Monitor, 
   Brain, 
@@ -189,9 +190,7 @@ export const Dashboard = () => {
       )}
 
       {/* Footer */}
-      <footer className="py-12 text-center text-slate-400 text-xs border-t border-slate-200 bg-white">
-        © 2024 GitHub Copilot Training Portal
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../hooks/useProgress';
 import { Button } from '../components/shared/Button';
+import { Footer } from '../components/shared/Footer';
 import { 
   Code2, 
   Github, 
@@ -11,7 +12,9 @@ import {
   Play, 
   CheckCircle2,
   Info,
-  ArrowLeft
+  ArrowLeft,
+  ExternalLink,
+  X
 } from 'lucide-react';
 
 export const WherePage = () => {
@@ -20,6 +23,7 @@ export const WherePage = () => {
   const [activeTab, setActiveTab] = useState('editors');
   const [terminalInput, setTerminalInput] = useState('');
   const [terminalOutput, setTerminalOutput] = useState('Welcome to Copilot CLI Simulator. Type "help" to start.');
+  const [showDetail, setShowDetail] = useState(null);
 
   const modules = [
     {
@@ -36,6 +40,12 @@ export const WherePage = () => {
           { name: 'Neovim / Vim', status: 'Lua/VimScript' }
         ],
         tip: 'Pro Tip: Use Cmd+I in VS Code to open the inline chat directly in your code block.'
+      },
+      tags: ['Context', 'Efficiency'],
+      details: {
+        howTo: 'Place your cursor where you want code, then use Cmd+I (inline chat) or type a comment describing what you need. Copilot will suggest completions based on your file context.',
+        example: '// fetch user data from API and handle errors → Copilot generates a full try/catch with fetch',
+        tip: 'The more specific your comment or prompt, the better the suggestion. Include types, error handling expectations, and naming conventions.'
       }
     },
     {
@@ -52,6 +62,12 @@ export const WherePage = () => {
           { name: 'Direct Coding', status: 'Edit files in browser with AI' }
         ],
         tip: 'GitHub Copilot Chat on the web is great for high-level architectural questions across many files.'
+      },
+      tags: ['Web', 'Collaboration'],
+      details: {
+        howTo: 'Navigate to any repository on GitHub.com and click the Copilot icon in the top-right. Ask questions about the repo, generate PR summaries, or get help planning issues.',
+        example: 'Open a PR → Click "Copilot" → "Summarize" → Copilot generates a structured description with changes, impact, and testing notes.',
+        tip: 'Use Copilot on GitHub.com for cross-file questions — it has access to the entire repository context, unlike local IDE which focuses on open files.'
       }
     },
     {
@@ -63,6 +79,12 @@ export const WherePage = () => {
         summary: 'The GitHub Copilot CLI translates natural language into shell commands.',
         interactive: true,
         tip: 'Try typing: "how to find large files" in the simulator below.'
+      },
+      tags: ['CLI', 'Productivity'],
+      details: {
+        howTo: 'Install with "gh extension install github/gh-copilot", then use "gh copilot suggest" followed by a natural language description of what you want to do.',
+        example: 'gh copilot suggest "find all files modified in the last 24 hours" → Copilot generates: find . -type f -mtime -1',
+        tip: 'Use "gh copilot explain" to understand complex commands. Paste any shell command and Copilot breaks it down step by step.'
       }
     }
   ];
@@ -147,7 +169,13 @@ export const WherePage = () => {
                 <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-slate-100 text-slate-600 tracking-wider">
                   Module Details
                 </span>
-                <h2 className="text-2xl font-bold">{currentModule.title}</h2>
+                <h2 className="text-2xl font-bold flex-1">{currentModule.title}</h2>
+                <button
+                  onClick={() => setShowDetail(currentModule.id)}
+                  className="text-slate-400 hover:text-blue-600 font-semibold transition flex items-center gap-1 text-sm"
+                >
+                  Details <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
 
               <div className="space-y-6">
@@ -248,6 +276,60 @@ export const WherePage = () => {
           </div>
         </div>
 
+        {/* Useful Links */}
+        <div className="mt-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+            <ExternalLink className="w-5 h-5 text-blue-600" /> Useful Resources
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <a
+              href="https://github.com/copilot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-5 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all group"
+            >
+              <div className="p-2 rounded-lg bg-slate-900 text-white">
+                <Github className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-sm group-hover:text-blue-600 transition-colors">GitHub Copilot</div>
+                <div className="text-xs text-slate-400">github.com/copilot</div>
+              </div>
+              <span className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Open ↗</span>
+            </a>
+            <a
+              href="https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-ide-code-suggestions"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-5 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all group"
+            >
+              <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
+                <Code2 className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-sm group-hover:text-blue-600 transition-colors">IDE Code Suggestions</div>
+                <div className="text-xs text-slate-400">docs.github.com</div>
+              </div>
+              <span className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Open ↗</span>
+            </a>
+            <a
+              href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-5 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all group"
+            >
+              <div className="p-2 rounded-lg bg-green-100 text-green-600">
+                <Terminal className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-sm group-hover:text-blue-600 transition-colors">Copilot CLI Guide</div>
+                <div className="text-xs text-slate-400">docs.github.com</div>
+              </div>
+              <span className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Open ↗</span>
+            </a>
+          </div>
+        </div>
+
         {/* Completion Button */}
         <div className="mt-8 text-center">
           <Button onClick={handleComplete} size="lg">
@@ -255,6 +337,78 @@ export const WherePage = () => {
           </Button>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Details Modal */}
+      {showDetail && (() => {
+        const mod = modules.find(m => m.id === showDetail);
+        if (!mod?.details) return null;
+        return (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowDetail(null)}
+          >
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+            <div 
+              className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setShowDetail(null)}
+                className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`p-3 rounded-xl ${
+                  mod.color === 'blue' ? 'bg-blue-50 text-blue-600' :
+                  mod.color === 'purple' ? 'bg-purple-50 text-purple-600' :
+                  'bg-green-50 text-green-600'
+                }`}>
+                  {mod.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">{mod.title}</h3>
+                  <span className="text-xs font-bold uppercase tracking-tight text-blue-600">
+                    {mod.color === 'blue' ? '💻 IDE' : mod.color === 'purple' ? '🌐 Web' : '⌨️ CLI'}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">{mod.content.summary}</p>
+
+              <div className="space-y-3">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1.5">💡 How to Use</p>
+                  <p className="text-sm text-emerald-900 leading-relaxed">{mod.details.howTo}</p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1.5">📝 Example</p>
+                  <p className="text-sm text-blue-900 leading-relaxed font-mono">{mod.details.example}</p>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-700 mb-1.5">⚡ Pro Tip</p>
+                  <p className="text-sm text-amber-900 leading-relaxed">{mod.details.tip}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-6 pt-5 border-t border-slate-100">
+                {mod.tags.map((tag, j) => (
+                  <span 
+                    key={j}
+                    className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
