@@ -1,0 +1,117 @@
+direction: down
+
+system-prompt: System Prompt {
+  style.fill: "#e8f4fd"
+  style.stroke: "#2196F3"
+  style.border-radius: 8
+  style.font-size: 20
+
+  core-identity: Core Identity and Global Rules {
+    style.fill: "#bbdefb"
+    style.border-radius: 6
+    label: |md
+      **Core Identity and Global Rules**
+      "You are an intelligent AI coding assistant"
+    |
+  }
+
+  general-instructions: General Instructions (Model Specific) {
+    style.fill: "#bbdefb"
+    style.border-radius: 6
+    label: |md
+      **General Instructions (Model Specific)**
+      "Never print out a codeblock with file changes"
+    |
+  }
+
+  tool-use: Tool Use Instructions {
+    style.fill: "#bbdefb"
+    style.border-radius: 6
+    label: |md
+      **Tool Use Instructions**
+      "Don't call the run in terminal multiple times in parallel"
+    |
+  }
+
+  output-format: Output Format Instructions {
+    style.fill: "#bbdefb"
+    style.border-radius: 6
+    label: |md
+      **Output Format Instructions**
+      How to format the output in chat for tokenization of things like file links
+    |
+  }
+
+  core-identity -> general-instructions
+  general-instructions -> tool-use
+  tool-use -> output-format
+}
+
+user-prompt: User Prompt {
+  style.fill: "#e8f5e9"
+  style.stroke: "#4CAF50"
+  style.border-radius: 8
+  style.font-size: 20
+
+  env-info: Environment Info {
+    style.fill: "#c8e6c9"
+    style.border-radius: 6
+    label: |md
+      **Environment Info**
+      Information about the OS, etc
+    |
+  }
+
+  workspace-info: Workspace Info {
+    style.fill: "#c8e6c9"
+    style.border-radius: 6
+
+    project: Project {
+      style.fill: "#a5d6a7"
+      folder1: Folder {
+        file1: file.txt
+        file2: file.txt
+      }
+      folder2: Folder
+      folder3: Folder
+    }
+  }
+
+  context-info: Context Info {
+    style.fill: "#c8e6c9"
+    style.border-radius: 6
+    label: |md
+      **Context Info**
+      Current Date/Time, list of open terminals, etc
+    |
+  }
+
+  editor-context: Editor Context {
+    style.fill: "#c8e6c9"
+    style.border-radius: 6
+    label: |md
+      **Editor Context**
+      Any files that you have added to the chat
+    |
+  }
+
+  user-request: User Request {
+    style.fill: "#c8e6c9"
+    style.border-radius: 6
+    label: |md
+      **User Request**
+      "Hello, World!"
+    |
+  }
+
+  env-info -> workspace-info
+  workspace-info -> context-info
+  context-info -> editor-context
+  editor-context -> user-request
+}
+
+system-prompt -> user-prompt: feeds into {
+  style.stroke: "#FF9800"
+  style.stroke-width: 2
+  style.stroke-dash: 5
+}

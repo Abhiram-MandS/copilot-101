@@ -1,0 +1,357 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useProgress } from '../hooks/useProgress';
+import { Button } from '../components/shared/Button';
+import { 
+  Monitor, 
+  FolderSearch, 
+  Wrench, 
+  Users, 
+  BookOpen, 
+  CheckCircle, 
+  FileText, 
+  MessageSquare, 
+  Flame, 
+  AlertTriangle, 
+  Plus,
+  Search,
+  ArrowLeft,
+  ChevronRight,
+  Lightbulb
+} from 'lucide-react';
+
+export const MasteringPage = () => {
+  const navigate = useNavigate();
+  const { markComplete } = useProgress();
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  
+  const features = [
+    {
+      title: "How and Where",
+      category: "dev",
+      icon: <Monitor className="w-6 h-6" />,
+      desc: "Guides code implementation options contextually based on your current cursor position and workspace.",
+      tags: ["Context", "Efficiency"]
+    },
+    {
+      title: "Repo Questions",
+      category: "analysis",
+      icon: <FolderSearch className="w-6 h-6" />,
+      desc: "Answers complex queries about repository structure, history, and architectural decisions.",
+      tags: ["Search", "Discovery"]
+    },
+    {
+      title: "Cleanup",
+      category: "dev",
+      icon: <Wrench className="w-6 h-6" />,
+      desc: "Refines code by identifying and removing redundant logic, unused imports, or duplicate fragments.",
+      tags: ["Refactor", "Quality"]
+    },
+    {
+      title: "Dependency Analysis",
+      category: "analysis",
+      icon: <Users className="w-6 h-6" />,
+      desc: "Maps library usage and identifies external dependencies to help manage project bloat and security.",
+      tags: ["Security", "Bloat"]
+    },
+    {
+      title: "Onboarding Help",
+      category: "analysis",
+      icon: <BookOpen className="w-6 h-6" />,
+      desc: "Explains high-level repository logic and workflows as if onboarding a new team member.",
+      tags: ["Docs", "Onboarding"]
+    },
+    {
+      title: "PR Review",
+      category: "dev",
+      icon: <CheckCircle className="w-6 h-6" />,
+      desc: "Automatically reviews pull requests for logical errors, security flaws, and coding standard violations.",
+      tags: ["Workflow", "QA"]
+    },
+    {
+      title: "Scripts & Docs",
+      category: "dev",
+      icon: <FileText className="w-6 h-6" />,
+      desc: "Generates automation scripts (Bash, Python) and maintains comprehensive project documentation.",
+      tags: ["Automation", "Docs"]
+    },
+    {
+      title: "Copilot MD",
+      category: "dev",
+      icon: <FileText className="w-6 h-6" />,
+      desc: "Extends Copilot capabilities into Markdown files for better READMEs and technical guides.",
+      tags: ["Writing", "Markdown"]
+    },
+    {
+      title: "Setting Context",
+      category: "dev",
+      icon: <MessageSquare className="w-6 h-6" />,
+      desc: "Allows chatting with the code environment to explain high-level goals and architectural needs.",
+      tags: ["Chat", "Context"]
+    },
+    {
+      title: "Performance Hotspot Hunt",
+      category: "analysis",
+      icon: <Flame className="w-6 h-6" />,
+      desc: "Identifies inefficient code sections and algorithmic bottlenecks that could slow down your application.",
+      tags: ["Perf", "Audit"]
+    },
+    {
+      title: "Error Handling Audit",
+      category: "analysis",
+      icon: <AlertTriangle className="w-6 h-6" />,
+      desc: "Reviews and suggests improvements for error management, catch blocks, and exception safety.",
+      tags: ["Safety", "Bugs"]
+    },
+    {
+      title: "Refactoring & More",
+      category: "dev",
+      icon: <Plus className="w-6 h-6" />,
+      desc: "Proactively suggests code improvements, modernization, and explores alternative implementations.",
+      tags: ["Suggest", "Refactor"]
+    }
+  ];
+  
+  const filteredFeatures = features.filter(f => {
+    const matchesSearch = f.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         f.desc.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = activeFilter === 'all' || f.category === activeFilter;
+    return matchesSearch && matchesFilter;
+  });
+  
+  const generateQuestion = () => {
+    const correctFeature = features[Math.floor(Math.random() * features.length)];
+    const decoys = features
+      .filter(f => f.title !== correctFeature.title)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3);
+    const choices = [correctFeature, ...decoys].sort(() => 0.5 - Math.random());
+    
+    setCurrentQuestion({ correct: correctFeature, choices });
+    setSelectedAnswer(null);
+    setShowFeedback(false);
+  };
+  
+  useEffect(() => {
+    generateQuestion();
+  }, []);
+  
+  const checkAnswer = (selectedTitle) => {
+    setSelectedAnswer(selectedTitle);
+    setShowFeedback(true);
+  };
+  
+  const handleComplete = () => {
+    markComplete('mastering');
+    navigate('/');
+  };
+  
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Dashboard</span>
+          </button>
+          <h1 className="text-lg font-bold">Module 3: Mastering Copilot</h1>
+          <div className="w-32" />
+        </div>
+      </header>
+      
+      {/* Hero */}
+      <section className="py-16 px-6 text-center max-w-4xl mx-auto">
+        <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-sm font-semibold uppercase tracking-wider">
+          Developer Resources
+        </div>
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Mastering Copilot
+        </h1>
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed">
+          A visual guide to the most powerful AI-assisted coding features. Learn how to optimize your workflow, analyze repositories, and clean your code.
+        </p>
+      </section>
+      
+      {/* Search & Filter */}
+      <section className="max-w-6xl mx-auto px-6 mb-12">
+        <div className="flex flex-col md:flex-row gap-6 items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
+            <input 
+              type="text" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search features..." 
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+            <button 
+              onClick={() => setActiveFilter('all')}
+              className={`px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
+                activeFilter === 'all' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              All Features
+            </button>
+            <button 
+              onClick={() => setActiveFilter('dev')}
+              className={`px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
+                activeFilter === 'dev' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              Development
+            </button>
+            <button 
+              onClick={() => setActiveFilter('analysis')}
+              className={`px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
+                activeFilter === 'analysis' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              Analysis
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      {/* Feature Grid */}
+      <main className="max-w-6xl mx-auto px-6">
+        {filteredFeatures.length === 0 ? (
+          <div className="col-span-full py-12 text-center text-slate-400">
+            No features found matching your search.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredFeatures.map((feature, i) => (
+              <div 
+                key={i}
+                className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col h-full hover:border-blue-500 hover:-translate-y-1 hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start justify-between mb-5">
+                  <div className="p-3 rounded-xl bg-blue-50 text-blue-600">
+                    {feature.icon}
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap justify-end">
+                    {feature.tags.map((tag, j) => (
+                      <span 
+                        key={j}
+                        className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-slate-900">{feature.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed flex-grow">{feature.desc}</p>
+                <div className="mt-6 pt-5 border-t border-slate-100 flex justify-between items-center text-xs">
+                  <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold uppercase tracking-tight">
+                    {feature.category === 'dev' ? '🔧 Development' : '📊 Analysis'}
+                  </span>
+                  <button className="text-slate-400 hover:text-blue-600 font-semibold transition flex items-center gap-1">
+                    Details <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+      
+      {/* Quiz Section */}
+      <section className="max-w-4xl mx-auto px-6 mt-24">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+            <Lightbulb className="w-40 h-40" />
+          </div>
+          
+          <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-slate-900">
+            <span className="bg-purple-100 text-purple-600 p-2 rounded-lg">
+              <Lightbulb className="w-6 h-6" />
+            </span>
+            Quick Knowledge Check
+          </h2>
+          
+          {currentQuestion && (
+            <div>
+              <p className="text-xl font-semibold mb-6 text-slate-800 leading-snug">
+                Scenario: Which feature helps you "{currentQuestion.correct.desc.toLowerCase()}"?
+              </p>
+              <div className="grid grid-cols-1 gap-3 mb-8">
+                {currentQuestion.choices.map((choice, i) => {
+                  const isCorrect = choice.title === currentQuestion.correct.title;
+                  const isSelected = selectedAnswer === choice.title;
+                  
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => !showFeedback && checkAnswer(choice.title)}
+                      className={`rounded-xl p-4 font-semibold transition cursor-pointer ${
+                        !showFeedback 
+                          ? 'bg-white border border-slate-200 hover:bg-slate-50 hover:border-blue-500 text-slate-700'
+                          : isSelected && isCorrect 
+                            ? 'bg-green-50 border border-green-200 text-green-700'
+                            : isSelected && !isCorrect
+                              ? 'bg-red-50 border border-red-200 text-red-700'
+                              : isCorrect
+                                ? 'bg-green-50 border border-green-200 text-green-700'
+                                : 'bg-white border border-slate-200 text-slate-400'
+                      }`}
+                    >
+                      {choice.title}
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {showFeedback && (
+                <div className={`mb-6 p-5 rounded-xl border font-medium ${
+                  selectedAnswer === currentQuestion.correct.title
+                    ? 'border-green-200 bg-green-50 text-green-700'
+                    : 'border-red-200 bg-red-50 text-red-700'
+                }`}>
+                  {selectedAnswer === currentQuestion.correct.title ? (
+                    `✓ Perfect! You've mastered identifying the ${currentQuestion.correct.title} feature.`
+                  ) : (
+                    <>✕ Not quite. That description belongs to <span className="font-bold underline">{currentQuestion.correct.title}</span>.</>
+                  )}
+                </div>
+              )}
+              
+              {showFeedback && (
+                <button 
+                  onClick={generateQuestion}
+                  className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all active:scale-95"
+                >
+                  Next Question
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+      
+      {/* Completion Button */}
+      <div className="max-w-6xl mx-auto px-6 py-20 text-center">
+        <Button onClick={handleComplete} size="lg">
+          Mark Complete & Finish Training
+        </Button>
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Copilot Feature Guide - Light Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6f8fa;
+            color: #1f2328;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
+        }
+
+        .feature-card:hover {
+            border-color: #0969da;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #0969da, #8250df);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-icon {
+            background: #f0f7ff;
+            color: #0969da;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-flex;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+        }
+
+        .quiz-option {
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .quiz-option:hover {
+            background: #f6f8fa;
+            border-color: #0969da;
+        }
+
+        .correct {
+            background: #dafbe1 !important;
+            border-color: #1a7f37 !important;
+            color: #1a7f37 !important;
+        }
+
+        .incorrect {
+            background: #ffebe9 !important;
+            border-color: #cf222e !important;
+            color: #cf222e !important;
+        }
+        
+        .btn-filter {
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            color: #1f2328;
+            transition: all 0.2s;
+        }
+        
+        .btn-filter:hover {
+            background: #f3f4f6;
+            border-color: #afb8c1;
+        }
+        
+        .btn-filter.active {
+            background: #0969da;
+            color: #ffffff;
+            border-color: #0969da;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="py-16 px-6 text-center max-w-4xl mx-auto">
+        <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-sm font-semibold uppercase tracking-wider">
+            Developer Resources
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 gradient-text">
+            Mastering Copilot
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 leading-relaxed">
+            A visual guide to the most powerful AI-assisted coding features. Learn how to optimize your workflow, analyze repositories, and clean your code.
+        </p>
+    </header>
+
+    <!-- Navigation/Search -->
+    <section class="max-w-6xl mx-auto px-6 mb-12">
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="relative w-full md:w-96">
+                <input type="text" id="searchInput" placeholder="Search features..." class="w-full bg-[#f6f8fa] border border-[#d0d7de] rounded-xl py-3 pl-12 pr-4 search-input transition-all">
+                <svg class="absolute left-4 top-3.5 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                <button onclick="updateFilter('all', this)" class="btn-filter active px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">All Features</button>
+                <button onclick="updateFilter('dev', this)" class="btn-filter px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">Development</button>
+                <button onclick="updateFilter('analysis', this)" class="btn-filter px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">Analysis</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Grid -->
+    <main class="max-w-6xl mx-auto px-6">
+        <div id="featureGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards will be injected here -->
+        </div>
+    </main>
+
+    <!-- Quiz Section -->
+    <section class="max-w-4xl mx-auto px-6 mt-24">
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-sm relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-slate-900">
+                <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </span>
+                Quick Knowledge Check
+            </h2>
+
+            <div id="quizContainer">
+                <p id="quizQuestion" class="text-xl font-semibold mb-6 text-slate-800 leading-snug">Loading question...</p>
+                <div id="quizOptions" class="grid grid-cols-1 gap-3 mb-8">
+                    <!-- Options injected here -->
+                </div>
+                <div id="quizFeedback" class="hidden mb-6 p-5 rounded-xl border font-medium"></div>
+                <button id="nextBtn" onclick="generateQuestion()" class="hidden px-8 py-3.5 bg-[#0969da] hover:bg-[#0860ca] text-white font-bold rounded-xl shadow-md transition-all active:scale-95">
+                    Next Question
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-24 text-center text-slate-500 text-sm border-t border-slate-200 py-12">
+        <p>&copy; 2024 Copilot Education Hub. Interactive training module.</p>
+    </footer>
+
+    <script>
+        const features = [
+            {
+                title: "How and Where",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
+                desc: "Guides code implementation options contextually based on your current cursor position and workspace.",
+                tags: ["Context", "Efficiency"]
+            },
+            {
+                title: "Repo Questions",
+                category: "analysis",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2zM15 13l-3-3m0 0l-3 3m3-3v8"></path></svg>`,
+                desc: "Answers complex queries about repository structure, history, and architectural decisions.",
+                tags: ["Search", "Discovery"]
+            },
+            {
+                title: "Cleanup",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>`,
+                desc: "Refines code by identifying and removing redundant logic, unused imports, or duplicate fragments.",
+                tags: ["Refactor", "Quality"]
+            },
+            {
+                title: "Dependency Analysis",
+                category: "analysis",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`,
+                desc: "Maps library usage and identifies external dependencies to help manage project bloat and security.",
+                tags: ["Security", "Bloat"]
+            },
+            {
+                title: "Onboarding Help",
+                category: "analysis",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>`,
+                desc: "Explains high-level repository logic and workflows as if onboarding a new team member.",
+                tags: ["Docs", "Onboarding"]
+            },
+            {
+                title: "PR Review",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+                desc: "Automatically reviews pull requests for logical errors, security flaws, and coding standard violations.",
+                tags: ["Workflow", "QA"]
+            },
+            {
+                title: "Scripts & Docs",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`,
+                desc: "Generates automation scripts (Bash, Python) and maintains comprehensive project documentation.",
+                tags: ["Automation", "Docs"]
+            },
+            {
+                title: "Copilot MD",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`,
+                desc: "Extends Copilot capabilities into Markdown files for better READMEs and technical guides.",
+                tags: ["Writing", "Markdown"]
+            },
+            {
+                title: "Setting Context",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>`,
+                desc: "Allows chatting with the code environment to explain high-level goals and architectural needs.",
+                tags: ["Chat", "Context"]
+            },
+            {
+                title: "Performance Hotspot Hunt",
+                category: "analysis",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path></svg>`,
+                desc: "Identifies inefficient code sections and algorithmic bottlenecks that could slow down your application.",
+                tags: ["Perf", "Audit"]
+            },
+            {
+                title: "Error Handling Audit",
+                category: "analysis",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`,
+                desc: "Reviews and suggests improvements for error management, catch blocks, and exception safety.",
+                tags: ["Safety", "Bugs"]
+            },
+            {
+                title: "Refactoring & More",
+                category: "dev",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>`,
+                desc: "Proactively suggests code improvements, modernization, and explores alternative implementations.",
+                tags: ["Suggest", "Refactor"]
+            }
+        ];
+
+        const grid = document.getElementById('featureGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderCards(filterData = features) {
+            if (filterData.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">No features found matching your search.</div>`;
+                return;
+            }
+            grid.innerHTML = filterData.map(f => `
+                <div class="feature-card rounded-2xl p-6 flex flex-col h-full">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="feature-icon">
+                            ${f.icon}
+                        </div>
+                        <div class="flex gap-1.5">
+                            ${f.tags.map(t => `<span class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900">${f.title}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed flex-grow">${f.desc}</p>
+                    <div class="mt-6 pt-5 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold uppercase tracking-tight">
+                            ${f.category === 'dev' ? '🔧 Development' : '📊 Analysis'}
+                        </span>
+                        <button class="text-slate-400 hover:text-blue-600 font-semibold transition flex items-center gap-1">
+                            Details <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateFilter(category, btn) {
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (category === 'all') {
+                renderCards(features);
+            } else {
+                renderCards(features.filter(f => f.category === category));
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = features.filter(f => 
+                f.title.toLowerCase().includes(term) || 
+                f.desc.toLowerCase().includes(term)
+            );
+            renderCards(filtered);
+        });
+
+        // Quiz Logic
+        let currentCorrectFeature = null;
+
+        function generateQuestion() {
+            const feedback = document.getElementById('quizFeedback');
+            const nextBtn = document.getElementById('nextBtn');
+            const optionsDiv = document.getElementById('quizOptions');
+            
+            feedback.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            
+            currentCorrectFeature = features[Math.floor(Math.random() * features.length)];
+            
+            document.getElementById('quizQuestion').innerText = `Scenario: Which feature helps you "${currentCorrectFeature.desc.toLowerCase()}"?`;
+            
+            const others = features.filter(f => f.title !== currentCorrectFeature.title);
+            const decoys = others.sort(() => 0.5 - Math.random()).slice(0, 3);
+            const choices = [currentCorrectFeature, ...decoys].sort(() => 0.5 - Math.random());
+            
+            optionsDiv.innerHTML = choices.map(choice => `
+                <div onclick="checkAnswer(this, '${choice.title}')" class="quiz-option rounded-xl p-4 text-slate-700 font-semibold">
+                    ${choice.title}
+                </div>
+            `).join('');
+        }
+
+        function checkAnswer(element, selectedTitle) {
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quizFeedback');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            options.forEach(opt => opt.onclick = null);
+
+            if (selectedTitle === currentCorrectFeature.title) {
+                element.classList.add('correct');
+                feedback.innerHTML = `✓ Perfect! You've mastered identifying the ${currentCorrectFeature.title} feature.`;
+                feedback.className = "mb-6 p-5 rounded-xl border border-green-200 bg-green-50 text-green-700";
+            } else {
+                element.classList.add('incorrect');
+                feedback.innerHTML = `✕ Not quite. That description belongs to <span class="font-bold underline">${currentCorrectFeature.title}</span>.`;
+                feedback.className = "mb-6 p-5 rounded-xl border border-red-200 bg-red-50 text-red-700";
+                
+                options.forEach(opt => {
+                    if (opt.innerText.trim() === currentCorrectFeature.title) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            feedback.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        // Initialize
+        renderCards();
+        generateQuestion();
+    </script>
+</body>
+</html>
